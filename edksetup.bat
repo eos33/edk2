@@ -1,3 +1,6 @@
+path c:\AOpen\Github\UEFI\NASM;%path%
+set PYTHON_HOME=c:\python27
+set IASL_PREFIX=c:\AOpen\Github\UEFI\ASL\
 @REM @file
 @REM   Windows batch file to setup a WORKSPACE environment
 @REM
