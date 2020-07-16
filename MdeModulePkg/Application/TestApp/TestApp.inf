@@ -1,0 +1,22 @@
+[Defines]  
+ INF_VERSION         = 0x00010005 
+ BASE_NAME           = TestApp
+ FILE_GUID           = 08f58693-1cba-4ddf-a204-f10a7dd01fae
+ MODULE_TYPE         = UEFI_APPLICATION
+ VERSION_STRING      = 1.0
+ ENTRY_POINT         = UefiMain
+
+[Sources]
+  TestApp.c
+
+[Packages] 
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  UefiApplicationEntryPoint
+  UefiLib
+
+[GUIDS]
+
+[Protocols]

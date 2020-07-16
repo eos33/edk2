@@ -1,3 +1,7 @@
+path c:\AOpen\Github\UEFI\NASM;%path%
+set PYTHON_HOME=c:\python27
+set IASL_PREFIX=c:\AOpen\Github\UEFI\ASL\
+path c:\AOpen\Github\UEFI\qemu-0.13.0-windows;%path%
 @REM @file
 @REM   Windows batch file to setup a WORKSPACE environment
 @REM
