@@ -16,7 +16,8 @@
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
-
+  DebugLib
+  
 [GUIDS]
 
 [Protocols]
