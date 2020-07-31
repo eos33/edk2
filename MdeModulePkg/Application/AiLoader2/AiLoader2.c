@@ -2,12 +2,12 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/UefiLib.h>
-#include <Token.h>
+//#include <Token.h>
 #include "AiLoader2.h"
-#include <AmiDxeLib.h>
+//#include <AmiDxeLib.h>
 #include <Library/BaseLib.h>
-#include <Protocol/FirmwareVolume2.h>
-#include <PROJECT/ProjectLibrary/AOpenSerialPortLib/AOpenSerialPortLib.h>
+//#include <Protocol/FirmwareVolume2.h>
+//#include <PROJECT/ProjectLibrary/AOpenSerialPortLib/AOpenSerialPortLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/DevicePath.h>
@@ -18,7 +18,7 @@
 FILE_DEVICE_PATH gFileDevicePath;
 BOOLEAN M2NVME = 0;
 
-const CHAR8 rawData_Backup[1407] = {
+CHAR8 rawData_Backup[1407] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -139,7 +139,7 @@ const CHAR8 rawData_Backup[1407] = {
         0x67, 0x0A, 0x7D
 };
 
-const CHAR8 rawData_Backup_nvme[1422] = {
+CHAR8 rawData_Backup_nvme[1422] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -261,7 +261,7 @@ const CHAR8 rawData_Backup_nvme[1422] = {
         0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D        
 };
 
-const CHAR8 rawData_Backup_Win[1424] = {
+CHAR8 rawData_Backup_Win[1424] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -383,7 +383,7 @@ const CHAR8 rawData_Backup_Win[1424] = {
         0x72, 0x64, 0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D  
 };
 
-const CHAR8 rawData_Backup_Win_nvme[1439] = {
+CHAR8 rawData_Backup_Win_nvme[1439] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -506,7 +506,7 @@ const CHAR8 rawData_Backup_Win_nvme[1439] = {
         0x6E, 0x69, 0x74, 0x72, 0x64, 0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D        
 };
 
-const CHAR8 rawData_Restore[1409] = {
+CHAR8 rawData_Restore[1409] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -627,7 +627,7 @@ const CHAR8 rawData_Restore[1409] = {
         0x6D, 0x67, 0x0A, 0x7D, 0x0A
 };
 
-const CHAR8 rawData_Restore_nvme[1424] = {
+CHAR8 rawData_Restore_nvme[1424] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -749,7 +749,7 @@ const CHAR8 rawData_Restore_nvme[1424] = {
         0x64, 0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D, 0x0A        
 };
 
-const CHAR8 rawData_Restore_Win[1409] = {
+CHAR8 rawData_Restore_Win[1409] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -870,7 +870,7 @@ const CHAR8 rawData_Restore_Win[1409] = {
         0x6D, 0x67, 0x0A, 0x7D, 0x0A
 };
 
-const CHAR8 rawData_Restore_Win_nvme[1424] = {
+CHAR8 rawData_Restore_Win_nvme[1424] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
         0x62, 0x6F, 0x6F, 0x74, 0x2F, 0x67, 0x72, 0x75, 0x62, 0x0A, 0x73, 0x65,
         0x74, 0x20, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x3D, 0x22, 0x30,
@@ -993,6 +993,51 @@ const CHAR8 rawData_Restore_Win_nvme[1424] = {
 };
 
 #if 1
+//VOID MemSet(VOID* pBuffer, UINTN Size, UINT8 Value){
+//	SetMem ( pBuffer, Size, Value);
+//}
+
+VOID MemCpy(VOID* pDestination, VOID* pSource, UINTN Length){
+	CopyMem(pDestination, pSource, Length);
+}
+
+void* Malloc(UINTN Size){
+	VOID *p=NULL;
+	gBS->AllocatePool(EfiBootServicesData,Size,&p);
+	return p;
+}
+
+UINTN DPLength(EFI_DEVICE_PATH_PROTOCOL *pDp)
+{
+	UINTN Size;
+    if (!pDp) return 0;
+    Size = 0;
+	for( 
+		; !(isEndNode(pDp) && pDp->SubType==END_ENTIRE_SUBTYPE)
+		; pDp = NEXT_NODE(pDp)
+	){
+        UINTN Length = NODE_LENGTH(pDp);
+        //Protection from the junk data.
+        //Zero type and zero length are illegal.
+        //If we encountered them, return
+        if (!pDp->Type || !Length) return Size;
+        Size += Length;
+    }
+	return Size + sizeof(EFI_DEVICE_PATH_PROTOCOL); // add size of END_DEVICE_PATH node
+}
+
+VOID* DPCopy(EFI_DEVICE_PATH_PROTOCOL *pDp)
+{
+	UINTN l;
+	UINT8 *p;
+
+    if (!pDp) return NULL;
+	l = DPLength(pDp);
+	p = Malloc(l);
+	MemCpy(p, pDp, l);
+	return p;
+}
+
 static EFI_DEVICE_PATH_PROTOCOL EndOfDevicePathNode = {
     END_DEVICE_PATH, END_ENTIRE_SUBTYPE,
     {sizeof(EFI_DEVICE_PATH_PROTOCOL),0}
@@ -1104,25 +1149,25 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     BOOLEAN RunBackup = FALSE;
     BOOLEAN RunRestore = FALSE;
     CHAR8 Buffer[128] = { 0 };
-    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL, *FilePath = NULL, *Dp = NULL;
+    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL, *FilePath = NULL;// *Dp = NULL;
     
-    AOPrintMessage("\n");
+//    AOPrintMessage("\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
+//    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
     
     gBS->Stall(50000);
     
-    AOPrintMessage("#STOP WDT\r\n");
+//    AOPrintMessage("#STOP WDT\r\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
+//    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
 
     gBS->Stall(50000);
     
-    AOPrintMessage("#WIN BACKUP\r\n");
+//    AOPrintMessage("#WIN BACKUP\r\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
+//    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
     if (!AsciiStrnCmp(Buffer, "Windows Backup=E00\r\n", AsciiStrLen("Windows Backup=E00\r\n"))) {
         RunBackup = TRUE;
@@ -1132,9 +1177,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     if (!RunBackup) {
         gBS->Stall(50000);
 
-        AOPrintMessage("#WIN RECOVERY\r\n");
+//        AOPrintMessage("#WIN RECOVERY\r\n");
         gBS->Stall(1000);
-        AOSerialPortRead(Buffer, sizeof(Buffer));
+//        AOSerialPortRead(Buffer, sizeof(Buffer));
         //Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
         if (!AsciiStrnCmp(Buffer, "Windows Recovery=E00\r\n", AsciiStrLen("Windows Recovery=E00\r\n"))) {
             RunRestore = TRUE;
@@ -1337,7 +1382,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     //Build file path
     gFileDevicePath.FileDevicePath.Header.Type = MEDIA_DEVICE_PATH;
     gFileDevicePath.FileDevicePath.Header.SubType = MEDIA_FILEPATH_DP;
-    StrCpy(gFileDevicePath.FileDevicePath.PathName, GRUB_LOADER_PATH);
+    //StrCpy(gFileDevicePath.FileDevicePath.PathName, GRUB_LOADER_PATH);
     SET_NODE_LENGTH(&(gFileDevicePath.FileDevicePath.Header), sizeof(EFI_DEVICE_PATH)+sizeof(GRUB_LOADER_PATH));
 
     //End of device path.

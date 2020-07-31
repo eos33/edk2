@@ -17,8 +17,6 @@ BaseMemoryLib
 UefiLib
 UefiApplicationEntryPoint
 UefiRuntimeServicesTableLib
-AmiDxeLib
-AOSerialPortLib 
   
 [Protocols]
 gEfiSimpleFileSystemProtocolGuid
@@ -34,6 +32,3 @@ gEfiFileInfoGuid
 [Packages]
 MdePkg/MdePkg.dec
 MdeModulePkg/MdeModulePkg.dec
-KabylakeSiliconPkg/SiPkg.dec
-KabylakePlatSamplePkg/PlatformPkg.dec
-AmiCompatibilityPkg/AmiCompatibilityPkg.dec
