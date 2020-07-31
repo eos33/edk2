@@ -1,0 +1,39 @@
+[Defines]
+INF_VERSION = 0x00010006
+VERSION_STRING = 0.1
+BASE_NAME = AiLoader2
+MODULE_TYPE = UEFI_APPLICATION
+FILE_GUID = 984630d2-6e12-4686-a191-86fbad84e2fb
+ENTRY_POINT = AiLoader2Entry
+
+[Sources]
+AiLoader2.c
+Grubcfg_rawdata.c
+AiLoader2.h
+
+[LibraryClasses]
+BaseLib
+BaseMemoryLib
+UefiLib
+UefiApplicationEntryPoint
+UefiRuntimeServicesTableLib
+AmiDxeLib
+AOSerialPortLib 
+  
+[Protocols]
+gEfiSimpleFileSystemProtocolGuid
+gEfiFirmwareVolume2ProtocolGuid
+gEfiBlockIoProtocolGuid
+gEfiDevicePathToTextProtocolGuid
+gEfiLoadedImageDevicePathProtocolGuid
+gEfiLoadedImageProtocolGuid 
+
+[Guids]
+gEfiFileInfoGuid
+
+[Packages]
+MdePkg/MdePkg.dec
+MdeModulePkg/MdeModulePkg.dec
+KabylakeSiliconPkg/SiPkg.dec
+KabylakePlatSamplePkg/PlatformPkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
