@@ -3,11 +3,13 @@
 
 #define END_DEVICE_PATH                 END_DEVICE_PATH_TYPE
 #define END_ENTIRE_SUBTYPE              END_ENTIRE_DEVICE_PATH_SUBTYPE
+#if 1
 #define NODE_LENGTH(pPath) ((pPath)->Length[0]+((pPath)->Length[1]<<8))
 #define SET_NODE_LENGTH(pPath,NodeLength) ((pPath)->Length[0]=(UINT8)(NodeLength),(pPath)->Length[1]=(NodeLength)>>8)
 #define NEXT_NODE(pPath) ((EFI_DEVICE_PATH_PROTOCOL*)((UINT8*)(pPath)+NODE_LENGTH(pPath)))
 #define isEndNode(pDp) ((pDp)->Type==END_DEVICE_PATH)
 #define EfiAppendDevicePathNode             _DPAddNode
+#endif
 #define GRUB_LOADER_PATH L"\\EFI\\AOPEN\\grubx64.efi"
 
 typedef struct {

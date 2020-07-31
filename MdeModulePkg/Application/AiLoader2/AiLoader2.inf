@@ -17,6 +17,7 @@ BaseMemoryLib
 UefiLib
 UefiApplicationEntryPoint
 UefiRuntimeServicesTableLib
+DevicePathLib
   
 [Protocols]
 gEfiSimpleFileSystemProtocolGuid

@@ -9,6 +9,7 @@
 //#include <Protocol/FirmwareVolume2.h>
 //#include <PROJECT/ProjectLibrary/AOpenSerialPortLib/AOpenSerialPortLib.h>
 #include <Library/BaseMemoryLib.h>
+#include <Library/DevicePathLib.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/DevicePath.h>
 #include <Protocol/BlockIo.h>
@@ -992,7 +993,7 @@ CHAR8 rawData_Restore_Win_nvme[1424] = {
         0x64, 0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D, 0x0A        
 };
 
-#if 1
+#if 0
 //VOID MemSet(VOID* pBuffer, UINTN Size, UINT8 Value){
 //	SetMem ( pBuffer, Size, Value);
 //}
@@ -1148,7 +1149,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     BOOLEAN WinInstalled = FALSE;
     BOOLEAN RunBackup = FALSE;
     BOOLEAN RunRestore = FALSE;
-    CHAR8 Buffer[128] = { 0 };
+    CHAR8 Buffer[128];
     EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL, *FilePath = NULL;// *Dp = NULL;
     
 //    AOPrintMessage("\n");
@@ -1391,7 +1392,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     SET_NODE_LENGTH(&(gFileDevicePath.EndDevicePath), sizeof(EFI_DEVICE_PATH));
     
     Status = gBS->HandleProtocol(HandleBuffer[i], &gEfiDevicePathProtocolGuid, (void**) &DevicePath);
-    FilePath = EfiAppendDevicePathNode(DevicePath, (EFI_DEVICE_PATH_PROTOCOL *) &gFileDevicePath);
+    FilePath = AppendDevicePathNode(DevicePath, (EFI_DEVICE_PATH_PROTOCOL *) &gFileDevicePath);
     debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
     Status = gBS->LoadImage(FALSE, gImageHandle, FilePath, NULL, 0, &handle);
 
