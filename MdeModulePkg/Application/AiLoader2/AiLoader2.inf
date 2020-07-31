@@ -10,6 +10,8 @@ ENTRY_POINT = AiLoader2Entry
 AiLoader2.c
 Grubcfg_rawdata.c
 AiLoader2.h
+AOpenSerialPortLib.c
+AOpenSerialPortLib.h
 
 [LibraryClasses]
 BaseLib
@@ -18,7 +20,8 @@ UefiLib
 UefiApplicationEntryPoint
 UefiRuntimeServicesTableLib
 DevicePathLib
-  
+IoLib
+
 [Protocols]
 gEfiSimpleFileSystemProtocolGuid
 gEfiFirmwareVolume2ProtocolGuid

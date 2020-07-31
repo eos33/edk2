@@ -7,7 +7,7 @@
 //#include <AmiDxeLib.h>
 #include <Library/BaseLib.h>
 //#include <Protocol/FirmwareVolume2.h>
-//#include <PROJECT/ProjectLibrary/AOpenSerialPortLib/AOpenSerialPortLib.h>
+#include "AOpenSerialPortLib.h"
 #include <Library/BaseMemoryLib.h>
 #include <Library/DevicePathLib.h>
 #include <Protocol/SimpleFileSystem.h>
@@ -1152,23 +1152,23 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     CHAR8 Buffer[128];
     EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL, *FilePath = NULL;// *Dp = NULL;
     
-//    AOPrintMessage("\n");
+    AOPrintMessage("\n");
     gBS->Stall(1000);
-//    AOSerialPortRead(Buffer, sizeof(Buffer));
+    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
     
     gBS->Stall(50000);
     
-//    AOPrintMessage("#STOP WDT\r\n");
+    AOPrintMessage("#STOP WDT\r\n");
     gBS->Stall(1000);
-//    AOSerialPortRead(Buffer, sizeof(Buffer));
+    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
 
     gBS->Stall(50000);
     
-//    AOPrintMessage("#WIN BACKUP\r\n");
+    AOPrintMessage("#WIN BACKUP\r\n");
     gBS->Stall(1000);
-//    AOSerialPortRead(Buffer, sizeof(Buffer));
+    AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
     if (!AsciiStrnCmp(Buffer, "Windows Backup=E00\r\n", AsciiStrLen("Windows Backup=E00\r\n"))) {
         RunBackup = TRUE;
@@ -1178,9 +1178,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     if (!RunBackup) {
         gBS->Stall(50000);
 
-//        AOPrintMessage("#WIN RECOVERY\r\n");
+        AOPrintMessage("#WIN RECOVERY\r\n");
         gBS->Stall(1000);
-//        AOSerialPortRead(Buffer, sizeof(Buffer));
+        AOSerialPortRead(Buffer, sizeof(Buffer));
         //Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
         if (!AsciiStrnCmp(Buffer, "Windows Recovery=E00\r\n", AsciiStrLen("Windows Recovery=E00\r\n"))) {
             RunRestore = TRUE;
