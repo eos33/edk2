@@ -28,4 +28,16 @@ extern CHAR8 rawData_Grucfg[];
 #define debug_print
 #endif
 
+#define debug(expr, ...) Debug("[%d] "expr"\r\n", __LINE__, ##__VA_ARGS__)
+#define trace(expr, ...) VtoyDebug("[VTOY] "expr"\r\n", ##__VA_ARGS__)
+#define sleep(sec) gBS->Stall(1000000 * (sec))
+
+#define debug_pause() \
+{ \
+    UINTN __Index = 0; \
+    gST->ConOut->OutputString(gST->ConOut, L"[debug] ###### Press Enter to continue... ######\r\n");\
+    gST->ConIn->Reset(gST->ConIn, FALSE); \
+    gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, &__Index);\
+}
+
 #endif

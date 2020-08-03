@@ -2,6 +2,8 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/UefiLib.h>
+#include <Library/DebugLib.h>
+#include <Library/PrintLib.h>
 //#include <Token.h>
 #include "AiLoader2.h"
 //#include <AmiDxeLib.h>
@@ -1066,6 +1068,48 @@ VOID* _DPAddNode(EFI_DEVICE_PATH_PROTOCOL *pDp1, EFI_DEVICE_PATH_PROTOCOL *pDp2)
     return NewDp;
 }
 #endif
+/*
+CHAR16 *
+EFIAPI
+StrCpy (
+  OUT     CHAR16                    *Destination,
+  IN      CONST CHAR16              *Source
+  )
+{
+  CHAR16                            *ReturnValue;
+
+  //
+  // Destination cannot be NULL
+  //
+  ASSERT (Destination != NULL);
+  ASSERT (((UINTN) Destination & BIT0) == 0);
+
+  //
+  // Destination and source cannot overlap
+  //
+  ASSERT ((UINTN)(Destination - Source) > StrLen (Source));
+  ASSERT ((UINTN)(Source - Destination) > StrLen (Source));
+
+  ReturnValue = Destination;
+  while (*Source != 0) {
+    *(Destination++) = *(Source++);
+  }
+  *Destination = 0;
+  return ReturnValue;
+}
+*/
+
+VOID EFIAPI Debug(IN CONST CHAR8  *Format, ...)
+{
+    VA_LIST  Marker;
+    CHAR16   Buffer[512];
+
+    VA_START (Marker, Format);
+    UnicodeVSPrintAsciiFormat(Buffer, sizeof(Buffer), Format, Marker);
+    VA_END (Marker);
+    
+    gST->ConOut->OutputString(gST->ConOut, Buffer);
+}
 
 BOOLEAN CheckUserContinue(void) {   
     EFI_INPUT_KEY InputKey;
@@ -1155,14 +1199,18 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     AOPrintMessage("\n");
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));
-    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
-    
+    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);    
+    debug("str=%a",Buffer);
+    debug_pause();
+
     gBS->Stall(50000);
     
     AOPrintMessage("#STOP WDT\r\n");
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));
-    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
+    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);    
+    debug("str=%a",Buffer);
+    debug_pause();
 
     gBS->Stall(50000);
     
@@ -1170,7 +1218,12 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));
     //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
+    debug("str=%a",Buffer);
+    debug_pause();    
+    
     if (!AsciiStrnCmp(Buffer, "Windows Backup=E00\r\n", AsciiStrLen("Windows Backup=E00\r\n"))) {
+        debug("RunBackup = TRUE",Buffer);
+        debug_pause();
         RunBackup = TRUE;
     } else
         RunBackup = FALSE;
@@ -1181,7 +1234,10 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
         AOPrintMessage("#WIN RECOVERY\r\n");
         gBS->Stall(1000);
         AOSerialPortRead(Buffer, sizeof(Buffer));
-        //Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
+        Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
+        
+        debug_pause();
+
         if (!AsciiStrnCmp(Buffer, "Windows Recovery=E00\r\n", AsciiStrLen("Windows Recovery=E00\r\n"))) {
             RunRestore = TRUE;
         } else
@@ -1215,7 +1271,8 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                 if (!EFI_ERROR (Status)) {
                     ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
 
-                    debug_print(L"[%d] %s\n", __LINE__, ToText);
+                    debug("%s", ToText);
+                    debug_pause();
 
                     while (!isEndNode (DevicePath)) {
                         debug_print(L"Type:[%d] SubType:[%d]\n", DevicePath->Type, DevicePath->SubType);
@@ -1383,7 +1440,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     //Build file path
     gFileDevicePath.FileDevicePath.Header.Type = MEDIA_DEVICE_PATH;
     gFileDevicePath.FileDevicePath.Header.SubType = MEDIA_FILEPATH_DP;
-    //StrCpy(gFileDevicePath.FileDevicePath.PathName, GRUB_LOADER_PATH);
+    StrCpy(gFileDevicePath.FileDevicePath.PathName, GRUB_LOADER_PATH);
     SET_NODE_LENGTH(&(gFileDevicePath.FileDevicePath.Header), sizeof(EFI_DEVICE_PATH)+sizeof(GRUB_LOADER_PATH));
 
     //End of device path.
@@ -1392,16 +1449,21 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     SET_NODE_LENGTH(&(gFileDevicePath.EndDevicePath), sizeof(EFI_DEVICE_PATH));
     
     Status = gBS->HandleProtocol(HandleBuffer[i], &gEfiDevicePathProtocolGuid, (void**) &DevicePath);
+
     FilePath = AppendDevicePathNode(DevicePath, (EFI_DEVICE_PATH_PROTOCOL *) &gFileDevicePath);
     debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
     Status = gBS->LoadImage(FALSE, gImageHandle, FilePath, NULL, 0, &handle);
 
     if (EFI_ERROR (Status)) {
+        debug("Load image error!");
+        debug_pause();
         debug_print(L"load image error\n");
     }
 
     Status = gBS->StartImage(handle, NULL, NULL);
     if (EFI_ERROR (Status)) {
+        debug("start image error!");
+        debug_pause();
         debug_print(L"start image error\n");
     }
 

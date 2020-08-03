@@ -21,6 +21,8 @@ UefiApplicationEntryPoint
 UefiRuntimeServicesTableLib
 DevicePathLib
 IoLib
+DebugLib
+BaseLib
 
 [Protocols]
 gEfiSimpleFileSystemProtocolGuid
