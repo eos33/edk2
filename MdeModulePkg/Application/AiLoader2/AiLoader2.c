@@ -1,21 +1,16 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include <Library/UefiLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
-//#include <Token.h>
-#include "AiLoader2.h"
-//#include <AmiDxeLib.h>
-#include <Library/BaseLib.h>
-//#include <Protocol/FirmwareVolume2.h>
-#include "AOpenSerialPortLib.h"
+#include <Library/UefiLib.h>
+#include  <Uefi.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/DevicePathLib.h>
-#include <Protocol/SimpleFileSystem.h>
-#include <Protocol/DevicePath.h>
 #include <Protocol/BlockIo.h>
 #include <Protocol/DevicePathToText.h>
+#include "AiLoader2.h"
+#include "AOpenSerialPortLib.h"
 #define MSG_NVME_DP  23
 
 FILE_DEVICE_PATH gFileDevicePath;
@@ -1437,11 +1432,17 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
     }
 
+    //FilePath = FileDevicePath (NULL, GRUB_LOADER_PATH);
+    
+    
     //Build file path
     gFileDevicePath.FileDevicePath.Header.Type = MEDIA_DEVICE_PATH;
     gFileDevicePath.FileDevicePath.Header.SubType = MEDIA_FILEPATH_DP;
-    StrCpy(gFileDevicePath.FileDevicePath.PathName, GRUB_LOADER_PATH);
+    StrCpyS(gFileDevicePath.FileDevicePath.PathName, 64, GRUB_LOADER_PATH);
     SET_NODE_LENGTH(&(gFileDevicePath.FileDevicePath.Header), sizeof(EFI_DEVICE_PATH)+sizeof(GRUB_LOADER_PATH));
+    
+    debug("size=%d",SIZE_OF_FILEPATH_DEVICE_PATH);
+    debug_pause();
 
     //End of device path.
     gFileDevicePath.EndDevicePath.Type = END_DEVICE_PATH;
@@ -1451,6 +1452,24 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     Status = gBS->HandleProtocol(HandleBuffer[i], &gEfiDevicePathProtocolGuid, (void**) &DevicePath);
 
     FilePath = AppendDevicePathNode(DevicePath, (EFI_DEVICE_PATH_PROTOCOL *) &gFileDevicePath);
+
+    {
+        CHAR16 *ToText;
+        EFI_DEVICE_PATH_TO_TEXT_PROTOCOL *DevPathToText;
+
+        Status = gBS->LocateProtocol(&gEfiDevicePathToTextProtocolGuid, NULL, (VOID **)&DevPathToText);
+
+        if (!EFI_ERROR(Status))
+        {
+            ToText = DevPathToText->ConvertDevicePathToText(FilePath, FALSE, TRUE);
+
+            debug("%s", ToText);
+            debug_pause();
+           
+            gBS->FreePool(ToText);
+        }
+    }
+
     debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
     Status = gBS->LoadImage(FALSE, gImageHandle, FilePath, NULL, 0, &handle);
 
