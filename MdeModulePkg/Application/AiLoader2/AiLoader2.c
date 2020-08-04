@@ -1189,8 +1189,8 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     BOOLEAN RunBackup = FALSE;
     BOOLEAN RunRestore = FALSE;
     CHAR8 Buffer[128];
-    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL, *FilePath = NULL;// *Dp = NULL;
-    
+    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL;//, *FilePath = NULL;// *Dp = NULL;
+
     AOPrintMessage("\n");
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));
@@ -1229,9 +1229,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
         AOPrintMessage("#WIN RECOVERY\r\n");
         gBS->Stall(1000);
         AOSerialPortRead(Buffer, sizeof(Buffer));
-        Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
-        
-        debug_pause();
+        //Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
+        debug("%a",Buffer);
+        debug_pause();        
 
         if (!AsciiStrnCmp(Buffer, "Windows Recovery=E00\r\n", AsciiStrLen("Windows Recovery=E00\r\n"))) {
             RunRestore = TRUE;
@@ -1282,6 +1282,11 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
                         DevicePath = NEXT_NODE (DevicePath);
                     }
+
+                    DevicePath = FileDevicePath(HandleBuffer[i], GRUB_LOADER_PATH);
+                    ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
+                    debug("%s", ToText);
+                    debug_pause();
 
                     gBS->FreePool(ToText);
                 }
@@ -1431,7 +1436,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
         }
 
     }
-
+/*
     //FilePath = FileDevicePath (NULL, GRUB_LOADER_PATH);
     
     
@@ -1469,9 +1474,10 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
             gBS->FreePool(ToText);
         }
     }
-
-    debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
-    Status = gBS->LoadImage(FALSE, gImageHandle, FilePath, NULL, 0, &handle);
+*/
+    debug("debug point");
+    debug_pause();
+    Status = gBS->LoadImage(FALSE, gImageHandle, DevicePath, NULL, 0, &handle);
 
     if (EFI_ERROR (Status)) {
         debug("Load image error!");
