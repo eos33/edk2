@@ -1094,7 +1094,7 @@ StrCpy (
 }
 */
 
-VOID EFIAPI Debug(IN CONST CHAR8  *Format, ...)
+VOID EFIAPI Debug_Print(IN CONST CHAR8  *Format, ...)
 {
     VA_LIST  Marker;
     CHAR16   Buffer[512];
@@ -1109,9 +1109,7 @@ VOID EFIAPI Debug(IN CONST CHAR8  *Format, ...)
 BOOLEAN CheckUserContinue(void) {   
     EFI_INPUT_KEY InputKey;
     EFI_STATUS Status;
-    UINTN EventIndex;
-    
-    debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+    UINTN EventIndex;        
     
     Print(L"Are you sure to continue the restore process?\r\n");
     Print(L"Press Y or N for next step.\r\n");
@@ -1120,54 +1118,20 @@ BOOLEAN CheckUserContinue(void) {
         gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, &EventIndex);
         Status = gST->ConIn->ReadKeyStroke(gST->ConIn, &InputKey);
         if (EFI_ERROR(Status)) {
-            debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+            debug_print("CheckUserContinue");
             return 0;
         }
 
         if (InputKey.UnicodeChar == L'Y' || InputKey.UnicodeChar == L'y') {
-            debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+            debug_print("CheckUserContinue");
             return 1;
         }
 
         if (InputKey.UnicodeChar == L'N' || InputKey.UnicodeChar == L'n') {
-            debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+            debug_print("CheckUserContinue");
             return 0;
         }
     }
-
-    /*
-    while (TRUE) {
-
-        // Read the key only when keyboard-buffer is not empty.
-        // Check whether k/b buffer is empty or not at the higher TPL using CheckEvent
-        Status = gBS->CheckEvent(gST->ConIn->WaitForKey);
-        if (Status != EFI_NOT_READY) {
-            //
-            // Read the key stroke if any and check for ESC key
-            // If ESC key is found, return status as EFI_ABORTED.
-            //
-            Status = gST->ConIn->ReadKeyStroke(gST->ConIn, &InputKey);
-            //if (!EFI_ERROR (Status) && (InputKey.ScanCode == SCAN_ESC)) {
-            //    return 1;
-            //}
-            if (InputKey.UnicodeChar == L'Y' || InputKey.UnicodeChar ==L'y'){
-                debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
-                return 1;
-            }
-            
-            if (InputKey.UnicodeChar == L'N' || InputKey.UnicodeChar ==L'n'){
-                debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
-                return 0;
-            }
-        }
-
-        //
-        // Give 100 milli seconds delay
-        //
-        gBS->Stall(100 * 1000);
-    } // while loop
-  
-    */
 
     return 0;  
 }
@@ -1193,31 +1157,28 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
     AOPrintMessage("\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
-    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);    
-    debug("str=%a",Buffer);
+    AOSerialPortRead(Buffer, sizeof(Buffer));    
+    debug_print("str=%a",Buffer);
     debug_pause();
 
     gBS->Stall(50000);
     
     AOPrintMessage("#STOP WDT\r\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
-    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);    
-    debug("str=%a",Buffer);
+    AOSerialPortRead(Buffer, sizeof(Buffer));    
+    debug_print("str=%a",Buffer);
     debug_pause();
 
     gBS->Stall(50000);
     
     AOPrintMessage("#WIN BACKUP\r\n");
     gBS->Stall(1000);
-    AOSerialPortRead(Buffer, sizeof(Buffer));
-    //Print(L"[line = %d] size=%d, str=%a\r\n",__LINE__,sizeof(Buffer),Buffer);
-    debug("str=%a",Buffer);
+    AOSerialPortRead(Buffer, sizeof(Buffer));    
+    debug_print("str=%a",Buffer);
     debug_pause();    
     
     if (!AsciiStrnCmp(Buffer, "Windows Backup=E00\r\n", AsciiStrLen("Windows Backup=E00\r\n"))) {
-        debug("RunBackup = TRUE",Buffer);
+        debug_print("RunBackup = TRUE",Buffer);
         debug_pause();
         RunBackup = TRUE;
     } else
@@ -1228,9 +1189,8 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
         AOPrintMessage("#WIN RECOVERY\r\n");
         gBS->Stall(1000);
-        AOSerialPortRead(Buffer, sizeof(Buffer));
-        //Print(L"[line = %d] size=%d, str=%a",__LINE__,sizeof(Buffer),Buffer);
-        debug("%a",Buffer);
+        AOSerialPortRead(Buffer, sizeof(Buffer));        
+        debug_print("%a",Buffer);
         debug_pause();        
 
         if (!AsciiStrnCmp(Buffer, "Windows Recovery=E00\r\n", AsciiStrLen("Windows Recovery=E00\r\n"))) {
@@ -1241,7 +1201,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
     Status = gBS->LocateHandleBuffer(ByProtocol, &gEfiSimpleFileSystemProtocolGuid, NULL, &Count, &HandleBuffer);
     if (EFI_ERROR(Status)) {
-        debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+        debug_print("[%d] AiLoader2Entry");
         return EFI_NOT_FOUND;
     }
 
@@ -1253,9 +1213,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
         
         Status = gBS->HandleProtocol(HandleBuffer[i], &gEfiDevicePathProtocolGuid, (VOID **) &DevicePath);
         if (EFI_ERROR(Status)) {
-            debug_print(L"[%d] Error!\n", __LINE__);
+            debug_print("Error!");
         } else {
-            debug_print(L"[%d] HandleProtocol -> gEfiDevicePathProtocolGuid! -- Successful\n", __LINE__);
+            debug_print("HandleProtocol -> gEfiDevicePathProtocolGuid! -- Successful");
 
             {
                 CHAR16 *ToText;
@@ -1266,17 +1226,17 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                 if (!EFI_ERROR (Status)) {
                     ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
 
-                    debug("%s", ToText);
+                    debug_print("%s", ToText);
                     debug_pause();
 
                     while (!isEndNode (DevicePath)) {
-                        debug_print(L"Type:[%d] SubType:[%d]\n", DevicePath->Type, DevicePath->SubType);
+                        debug_print("Type:[%d] SubType:[%d]", DevicePath->Type, DevicePath->SubType);
 
                         if ((MESSAGING_DEVICE_PATH == DevicePath->Type) && (MSG_NVME_DP == DevicePath->SubType)) {
-                            debug_print(L"[%d] NVME SSD found.\n", __LINE__);
+                            debug_print("NVME SSD found.");
                             M2NVME = 1;
                         } else if ((MESSAGING_DEVICE_PATH == DevicePath->Type) && (MSG_SATA_DP == DevicePath->SubType)) {
-                            debug_print(L"[%d] SATA SSD found.\n", __LINE__);
+                            debug_print("SATA SSD found.");
                             M2NVME = 0;
                         }
 
@@ -1285,7 +1245,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
                     DevicePath = FileDevicePath(HandleBuffer[i], GRUB_LOADER_PATH);
                     ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
-                    debug("%s", ToText);
+                    debug_print("%s", ToText);
                     debug_pause();
 
                     gBS->FreePool(ToText);
@@ -1306,23 +1266,23 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
             Status = FileProtocol->Open(FileProtocol, &FileProtocol2, WinLoader, EFI_FILE_MODE_READ, 0);
             if (!EFI_ERROR(Status)) {
-                debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+                debug_print("AiLoader2Entry");
                 WinInstalled = TRUE;
                 Status = FileProtocol2->Close(FileProtocol2);
             } else {
-                debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+                debug_print("AiLoader2Entry");
                 WinInstalled = FALSE;
             }
 
             Status = FileProtocol->Open(FileProtocol, &FileProtocol2, GrubCfg, EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_CREATE, 0);
             if (!EFI_ERROR(Status)) {
                 Status = FileProtocol2->Delete(FileProtocol2);
-                debug_print(L"[%d] AiLoader2Entry -- Delete grub.cfg\n", __LINE__);
+                debug_print("AiLoader2Entry -- Delete grub.cfg");
             }
 
             Status = FileProtocol->Open(FileProtocol, &FileProtocol2, GrubCfg, EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_CREATE, 0);
             if (EFI_ERROR(Status)) {
-                debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+                debug_print("AiLoader2Entry");
                 FileProtocol->Close(FileProtocol);
                 continue;
             } else {
@@ -1352,9 +1312,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                         }                                                    
                     }
 
-                    debug_print(L"rawData_Backup file is done\n");
+                    debug_print("rawData_Backup file is done");
                     if (Status != RETURN_SUCCESS)
-                        debug_print(L"Command Line Backup execute error!\n");
+                        debug_print("Command Line Backup execute error!");
                 } else if (RunRestore) {
                     if (WinInstalled) {
                         Print(L"Restore -- Windows system\r\n");
@@ -1380,9 +1340,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                         }                            
                     }
 
-                    debug_print(L"rawData_Restore file is done\n");
+                    debug_print("rawData_Restore file is done");
                     if (Status != RETURN_SUCCESS)
-                        debug_print(L"Command Line Recovery execute error!\n");
+                        debug_print("Command Line Recovery execute error!");
                 } else {                   
                     
                     if(!CheckUserContinue())
@@ -1412,9 +1372,9 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                         }
                     }
 
-                    debug_print(L"rawData_Restore file is done\n");
+                    debug_print("rawData_Restore file is done");
                     if (Status != RETURN_SUCCESS)
-                        debug_print(L"Command Line Recovery execute error!\n");
+                        debug_print("Command Line Recovery execute error!");
                 }
 
                 Status = FileProtocol->Open(FileProtocol, &FileProtocol3, GrubCfg_org, EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_CREATE, 0);
@@ -1431,65 +1391,26 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                 break;
             }
         } else {
-            debug_print(L"[%d] AiLoader2Entry\n", __LINE__);
+            debug_print("[%d] AiLoader2Entry");
             continue;
         }
 
     }
-/*
-    //FilePath = FileDevicePath (NULL, GRUB_LOADER_PATH);
-    
-    
-    //Build file path
-    gFileDevicePath.FileDevicePath.Header.Type = MEDIA_DEVICE_PATH;
-    gFileDevicePath.FileDevicePath.Header.SubType = MEDIA_FILEPATH_DP;
-    StrCpyS(gFileDevicePath.FileDevicePath.PathName, 64, GRUB_LOADER_PATH);
-    SET_NODE_LENGTH(&(gFileDevicePath.FileDevicePath.Header), sizeof(EFI_DEVICE_PATH)+sizeof(GRUB_LOADER_PATH));
-    
-    debug("size=%d",SIZE_OF_FILEPATH_DEVICE_PATH);
+
+    debug_print("Start to load image --->");
     debug_pause();
-
-    //End of device path.
-    gFileDevicePath.EndDevicePath.Type = END_DEVICE_PATH;
-    gFileDevicePath.EndDevicePath.SubType = END_ENTIRE_SUBTYPE;
-    SET_NODE_LENGTH(&(gFileDevicePath.EndDevicePath), sizeof(EFI_DEVICE_PATH));
     
-    Status = gBS->HandleProtocol(HandleBuffer[i], &gEfiDevicePathProtocolGuid, (void**) &DevicePath);
-
-    FilePath = AppendDevicePathNode(DevicePath, (EFI_DEVICE_PATH_PROTOCOL *) &gFileDevicePath);
-
-    {
-        CHAR16 *ToText;
-        EFI_DEVICE_PATH_TO_TEXT_PROTOCOL *DevPathToText;
-
-        Status = gBS->LocateProtocol(&gEfiDevicePathToTextProtocolGuid, NULL, (VOID **)&DevPathToText);
-
-        if (!EFI_ERROR(Status))
-        {
-            ToText = DevPathToText->ConvertDevicePathToText(FilePath, FALSE, TRUE);
-
-            debug("%s", ToText);
-            debug_pause();
-           
-            gBS->FreePool(ToText);
-        }
-    }
-*/
-    debug("debug point");
-    debug_pause();
     Status = gBS->LoadImage(FALSE, gImageHandle, DevicePath, NULL, 0, &handle);
 
     if (EFI_ERROR (Status)) {
-        debug("Load image error!");
-        debug_pause();
-        debug_print(L"load image error\n");
+        debug_print("Load image error!");
+        debug_pause();        
     }
 
     Status = gBS->StartImage(handle, NULL, NULL);
     if (EFI_ERROR (Status)) {
-        debug("start image error!");
-        debug_pause();
-        debug_print(L"start image error\n");
+        debug_print("start image error!");
+        debug_pause();        
     }
 
     return EFI_SUCCESS;

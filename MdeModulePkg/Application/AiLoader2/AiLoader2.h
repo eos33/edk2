@@ -21,21 +21,20 @@ typedef struct {
 extern const UINTN rawData_Grucfg_size;
 extern CHAR8 rawData_Grucfg[];
 
-//#define DEBUG_PRINT 1
+#define DEBUG_PRINT 1
+
 #ifdef DEBUG_PRINT
-#define debug_print Print
+#define debug_print(expr, ...) Debug_Print("[%05d @ %a] "expr"\r\n", __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #else
 #define debug_print
 #endif
 
-#define debug(expr, ...) Debug("[%d] "expr"\r\n", __LINE__, ##__VA_ARGS__)
-#define trace(expr, ...) VtoyDebug("[VTOY] "expr"\r\n", ##__VA_ARGS__)
 #define sleep(sec) gBS->Stall(1000000 * (sec))
 
 #define debug_pause() \
 { \
     UINTN __Index = 0; \
-    gST->ConOut->OutputString(gST->ConOut, L"[debug] ###### Press Enter to continue... ######\r\n");\
+    gST->ConOut->OutputString(gST->ConOut, L"###### Press Enter to continue ######\r\n");\
     gST->ConIn->Reset(gST->ConIn, FALSE); \
     gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, &__Index);\
 }
