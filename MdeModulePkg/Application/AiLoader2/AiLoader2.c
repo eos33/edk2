@@ -9,12 +9,14 @@
 #include <Library/DevicePathLib.h>
 #include <Protocol/BlockIo.h>
 #include <Protocol/DevicePathToText.h>
+#include <Protocol/LoadedImage.h>
 #include "AiLoader2.h"
 #include "AOpenSerialPortLib.h"
 #define MSG_NVME_DP  23
 
 FILE_DEVICE_PATH gFileDevicePath;
 BOOLEAN M2NVME = 0;
+BOOLEAN gDebugPrint = FALSE;
 
 CHAR8 rawData_Backup[1407] = {
         0x23, 0x0A, 0x73, 0x65, 0x74, 0x20, 0x70, 0x72, 0x65, 0x66, 0x3D, 0x2F,
@@ -1099,6 +1101,9 @@ VOID EFIAPI Debug_Print(IN CONST CHAR8  *Format, ...)
     VA_LIST  Marker;
     CHAR16   Buffer[512];
 
+    if(!gDebugPrint)
+        return;
+
     VA_START (Marker, Format);
     UnicodeVSPrintAsciiFormat(Buffer, sizeof(Buffer), Format, Marker);
     VA_END (Marker);
@@ -1136,6 +1141,41 @@ BOOLEAN CheckUserContinue(void) {
     return 0;  
 }
 
+STATIC EFI_STATUS EFIAPI parse_cmdline(IN EFI_HANDLE ImageHandle)
+{
+    CHAR16 *pCmdLine = NULL;    
+    EFI_STATUS Status = EFI_SUCCESS;    
+    EFI_LOADED_IMAGE_PROTOCOL *pImageInfo = NULL;    
+
+    Status = gBS->HandleProtocol(ImageHandle, &gEfiLoadedImageProtocolGuid, (VOID **)&pImageInfo);
+    if (EFI_ERROR(Status))
+    {
+        debug_print("Failed to handle load image protocol %r", Status);
+        return Status;
+    }
+
+    pCmdLine = (CHAR16 *)AllocatePool(pImageInfo->LoadOptionsSize + 4);
+    SetMem(pCmdLine, pImageInfo->LoadOptionsSize + 4, 0);
+    CopyMem(pCmdLine, pImageInfo->LoadOptions, pImageInfo->LoadOptionsSize);
+
+    if (StrStr(pCmdLine, L"debug"))
+    {
+        gDebugPrint = TRUE;
+        debug_print("parameter = debug");
+        debug_pause();
+    }
+
+    if (StrStr(pCmdLine, L"garyq"))
+    {
+        //gLoadIsoEfi = TRUE;
+        debug_print("parameter = garyq");
+        debug_pause();
+    }
+
+    FreePool(pCmdLine);
+    return EFI_SUCCESS;
+}
+
 EFI_STATUS
 EFIAPI
 AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
@@ -1154,6 +1194,8 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     BOOLEAN RunRestore = FALSE;
     CHAR8 Buffer[128];
     EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL;//, *FilePath = NULL;// *Dp = NULL;
+
+    parse_cmdline(ImageHandle);
 
     AOPrintMessage("\n");
     gBS->Stall(1000);
@@ -1399,7 +1441,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
 
     debug_print("Start to load image --->");
     debug_pause();
-    
+
     Status = gBS->LoadImage(FALSE, gImageHandle, DevicePath, NULL, 0, &handle);
 
     if (EFI_ERROR (Status)) {
