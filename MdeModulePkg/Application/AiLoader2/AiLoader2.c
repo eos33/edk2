@@ -992,110 +992,6 @@ CHAR8 rawData_Restore_Win_nvme[1424] = {
         0x64, 0x2E, 0x69, 0x6D, 0x67, 0x0A, 0x7D, 0x0A        
 };
 
-#if 0
-//VOID MemSet(VOID* pBuffer, UINTN Size, UINT8 Value){
-//	SetMem ( pBuffer, Size, Value);
-//}
-
-VOID MemCpy(VOID* pDestination, VOID* pSource, UINTN Length){
-	CopyMem(pDestination, pSource, Length);
-}
-
-void* Malloc(UINTN Size){
-	VOID *p=NULL;
-	gBS->AllocatePool(EfiBootServicesData,Size,&p);
-	return p;
-}
-
-UINTN DPLength(EFI_DEVICE_PATH_PROTOCOL *pDp)
-{
-	UINTN Size;
-    if (!pDp) return 0;
-    Size = 0;
-	for( 
-		; !(isEndNode(pDp) && pDp->SubType==END_ENTIRE_SUBTYPE)
-		; pDp = NEXT_NODE(pDp)
-	){
-        UINTN Length = NODE_LENGTH(pDp);
-        //Protection from the junk data.
-        //Zero type and zero length are illegal.
-        //If we encountered them, return
-        if (!pDp->Type || !Length) return Size;
-        Size += Length;
-    }
-	return Size + sizeof(EFI_DEVICE_PATH_PROTOCOL); // add size of END_DEVICE_PATH node
-}
-
-VOID* DPCopy(EFI_DEVICE_PATH_PROTOCOL *pDp)
-{
-	UINTN l;
-	UINT8 *p;
-
-    if (!pDp) return NULL;
-	l = DPLength(pDp);
-	p = Malloc(l);
-	MemCpy(p, pDp, l);
-	return p;
-}
-
-static EFI_DEVICE_PATH_PROTOCOL EndOfDevicePathNode = {
-    END_DEVICE_PATH, END_ENTIRE_SUBTYPE,
-    {sizeof(EFI_DEVICE_PATH_PROTOCOL),0}
-};
-
-void* _Malloc(UINTN Size){
-    VOID *p=NULL;
-    gBS->AllocatePool(EfiBootServicesData,Size,&p);
-    return p;
-}
-
-VOID* _DPAddNode(EFI_DEVICE_PATH_PROTOCOL *pDp1, EFI_DEVICE_PATH_PROTOCOL *pDp2)
-{
-    UINTN l1;
-    UINT8 *NewDp, *p;
-
-    if (!pDp2) return (pDp1) ? DPCopy(pDp1) : DPCopy(&EndOfDevicePathNode);    
-    l1 = pDp1 ? DPLength(pDp1)-sizeof(EFI_DEVICE_PATH_PROTOCOL) : 0;    
-    NewDp = _Malloc(l1+NODE_LENGTH(pDp2)+sizeof(EFI_DEVICE_PATH_PROTOCOL));
-    p = NewDp;
-
-    if (l1) { MemCpy(p, pDp1, l1); p+=l1; }
-    MemCpy(p, pDp2, NODE_LENGTH(pDp2)); p+=NODE_LENGTH(pDp2);
-    *((EFI_DEVICE_PATH_PROTOCOL*)p) = EndOfDevicePathNode;
-    return NewDp;
-}
-#endif
-/*
-CHAR16 *
-EFIAPI
-StrCpy (
-  OUT     CHAR16                    *Destination,
-  IN      CONST CHAR16              *Source
-  )
-{
-  CHAR16                            *ReturnValue;
-
-  //
-  // Destination cannot be NULL
-  //
-  ASSERT (Destination != NULL);
-  ASSERT (((UINTN) Destination & BIT0) == 0);
-
-  //
-  // Destination and source cannot overlap
-  //
-  ASSERT ((UINTN)(Destination - Source) > StrLen (Source));
-  ASSERT ((UINTN)(Source - Destination) > StrLen (Source));
-
-  ReturnValue = Destination;
-  while (*Source != 0) {
-    *(Destination++) = *(Source++);
-  }
-  *Destination = 0;
-  return ReturnValue;
-}
-*/
-
 VOID EFIAPI Debug_Print(IN CONST CHAR8  *Format, ...)
 {
     VA_LIST  Marker;
@@ -1193,7 +1089,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     BOOLEAN RunBackup = FALSE;
     BOOLEAN RunRestore = FALSE;
     CHAR8 Buffer[128];
-    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL;//, *FilePath = NULL;// *Dp = NULL;
+    EFI_DEVICE_PATH_PROTOCOL *DevicePath = NULL;
 
     parse_cmdline(ImageHandle);
 
