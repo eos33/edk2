@@ -1,0 +1,29 @@
+[Defines]
+INF_VERSION = 0x00010006
+VERSION_STRING = 0.1
+BASE_NAME = smbus
+MODULE_TYPE = UEFI_APPLICATION
+FILE_GUID = 984630d2-6e12-4686-a191-86fbad84e2fa
+ENTRY_POINT = SMBusEntry
+
+[Sources]
+smbus.c
+
+[LibraryClasses]
+BaseLib
+BaseMemoryLib
+UefiLib
+UefiApplicationEntryPoint
+UefiRuntimeServicesTableLib
+DevicePathLib
+IoLib
+DebugLib
+BaseLib
+
+[Protocols]
+
+[Guids]
+
+[Packages]
+MdePkg/MdePkg.dec
+MdeModulePkg/MdeModulePkg.dec
