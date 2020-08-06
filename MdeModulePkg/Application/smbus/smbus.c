@@ -249,12 +249,13 @@ SMBusEntry(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
     {
         ReadByteFromSmbus(0xA0, i, &data);
         Debug_Print("%02x ", data);
+        SMDbgPrint("%02x ",data);
     }
 
     Debug_Print("\n");
     debug_pause();
 
     SMDbgPrint("Gary SMBus Test\r\n");
-    
+
     return EFI_SUCCESS;
 }
