@@ -22,6 +22,11 @@
 
 #define sleep(sec) gBS->Stall(1000000 * (sec))
 
+VOID SMDbgPrint (
+	IN const CHAR8*	_str,
+	...
+	);
+
 #define PHY_PCI32_Addr(_M_BUS, _M_DEV, _M_FUN, _M_OFF) \
     (0x80000000 |                                      \
      ((((UINT8)_M_BUS) & 0xff) << 16) |                \
@@ -249,5 +254,7 @@ SMBusEntry(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
     Debug_Print("\n");
     debug_pause();
 
+    SMDbgPrint("Gary SMBus Test\r\n");
+    
     return EFI_SUCCESS;
 }
