@@ -12,6 +12,8 @@
 #include <Protocol/LoadedImage.h>
 #include "AiLoader2.h"
 #include "AOpenSerialPortLib.h"
+#include <Library/SMDBGLib.h>
+
 #define MSG_NVME_DP  23
 
 FILE_DEVICE_PATH gFileDevicePath;
@@ -1097,6 +1099,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));    
     debug_print("str=%a",Buffer);
+    SMDbgPrint("%s\r\n",Buffer);
     debug_pause();
 
     gBS->Stall(50000);
@@ -1105,6 +1108,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));    
     debug_print("str=%a",Buffer);
+    SMDbgPrint("%s\r\n",Buffer);
     debug_pause();
 
     gBS->Stall(50000);
@@ -1113,6 +1117,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
     gBS->Stall(1000);
     AOSerialPortRead(Buffer, sizeof(Buffer));    
     debug_print("str=%a",Buffer);
+    SMDbgPrint("%s\r\n",Buffer);
     debug_pause();    
     
     if (!AsciiStrnCmp(Buffer, "Windows Backup=E00\r\n", AsciiStrLen("Windows Backup=E00\r\n"))) {
@@ -1165,10 +1170,12 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                     ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
 
                     debug_print("%s", ToText);
+                    SMDbgPrint("%S\r\n",ToText);
                     debug_pause();
 
                     while (!isEndNode (DevicePath)) {
                         debug_print("Type:[%d] SubType:[%d]", DevicePath->Type, DevicePath->SubType);
+                        SMDbgPrint("Type:[%d] SubType:[%d]\r\n", DevicePath->Type, DevicePath->SubType);
 
                         if ((MESSAGING_DEVICE_PATH == DevicePath->Type) && (MSG_NVME_DP == DevicePath->SubType)) {
                             debug_print("NVME SSD found.");
@@ -1184,6 +1191,7 @@ AiLoader2Entry( IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable) {
                     DevicePath = FileDevicePath(HandleBuffer[i], GRUB_LOADER_PATH);
                     ToText = DevPathToText->ConvertDevicePathToText(DevicePath, FALSE, TRUE);
                     debug_print("%s", ToText);
+                    SMDbgPrint("%S\r\n",ToText);
                     debug_pause();
 
                     gBS->FreePool(ToText);

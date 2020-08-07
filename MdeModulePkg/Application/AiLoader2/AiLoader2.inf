@@ -23,6 +23,7 @@ DevicePathLib
 IoLib
 DebugLib
 BaseLib
+SMDBGLib
 
 [Protocols]
 gEfiSimpleFileSystemProtocolGuid
