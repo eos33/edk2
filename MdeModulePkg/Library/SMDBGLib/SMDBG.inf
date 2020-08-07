@@ -1,0 +1,29 @@
+[Defines]
+INF_VERSION = 0x00010006
+VERSION_STRING = 0.1
+BASE_NAME = SMDBGLib
+MODULE_TYPE = BASE
+FILE_GUID = 984630d2-6e12-4686-a191-86fbad84e2ff
+LIBRARY_CLASS = SMDBGLib
+
+[Sources]
+SMDBG.c
+SMDBGCommFunc.c
+
+[LibraryClasses]
+BaseLib
+BaseMemoryLib
+UefiLib
+IoLib
+DebugLib
+PlatformHookLib
+
+[Protocols]
+
+[Guids]
+
+[Packages]
+MdePkg/MdePkg.dec
+MdeModulePkg/MdeModulePkg.dec
+
+[Pcd]

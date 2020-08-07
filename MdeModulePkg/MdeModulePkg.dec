@@ -28,6 +28,8 @@
   Library/BrotliCustomDecompressLib/brotli/c/include
 
 [LibraryClasses]
+  SMDBGLib|Include/Library/SMDBGLib.h
+  
   ##  @libraryclass  Defines a set of methods to reset whole system.
   ResetSystemLib|Include/Library/ResetSystemLib.h
 

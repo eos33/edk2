@@ -19,6 +19,7 @@
   SKUID_IDENTIFIER               = DEFAULT
 
 [LibraryClasses]
+  SMDBGLib|MdeModulePkg/Library/SMDBGLib/SMDBG.inf
   #
   # Entry point
   #
@@ -98,6 +99,7 @@
   SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf
   DisplayUpdateProgressLib|MdeModulePkg/Library/DisplayUpdateProgressLibGraphics/DisplayUpdateProgressLibGraphics.inf
 
+  
 [LibraryClasses.EBC.PEIM]
   IoLib|MdePkg/Library/PeiIoLibCpuIo/PeiIoLibCpuIo.inf
 
@@ -203,6 +205,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdRecoveryFileName|L"FVMAIN.FV"
 
 [Components]
+  MdeModulePkg/Library/SMDBGLib/SMDBG.inf
   MdeModulePkg/Application/smbus/smbus.inf
   MdeModulePkg/Application/AiLoader2/AiLoader2.inf
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
